@@ -1,14 +1,20 @@
 version: 1.0.{build}
-image: Visual Studio 2019
+image: macos-monterey
 configuration: Debug
 platform: Any CPU
 environment:
     AUTOUPDATER_Duplicati_SKIP_UPDATE: 1
     COVERALLS_REPO_TOKEN:
         secure: szQsrkP5rvra8L60SomD73/dFvRwot0UuyA566zqzI2qmLOr+MhLN0AyC8BTbhYY
+    APPVEYOR_VNC_BLOCK: true        
 before_build:
     - ps: $env:UNITTEST_BASEFOLDER = "$Env:APPVEYOR_BUILD_FOLDER" + "\testdata"
     - cmd: nuget restore Duplicati.sln
+    - sh: |
+            dotnet tool install --global boots --version 1.0.2.421 
+            export PATH="$PATH:/Users/appveyor/.dotnet/tools"
+            boots --stable XamarinMac
+            curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-vnc.sh' | bash -e -      
 build:
     project: Duplicati.sln
     verbosity: minimal
