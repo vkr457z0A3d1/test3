@@ -18,6 +18,7 @@ before_build:
 build:
     project: Duplicati.sln
     verbosity: minimal
+
 test_script:
     - ps: |
         nuget install OpenCover -Version 4.7.922 -OutputDirectory packages
